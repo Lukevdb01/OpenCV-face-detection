@@ -2,7 +2,7 @@
 
 #include <Windows.h>
 
-#include "utils/opengl.h"
+#include "utils/helper.h"
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_win32.h"
 #include "imgui/imgui_impl_opengl3.h"

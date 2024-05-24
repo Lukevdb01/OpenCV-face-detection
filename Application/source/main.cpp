@@ -1,5 +1,5 @@
 #include <Windows.h>
-#include "utils/opengl.h"
+#include "utils/helper.h"
 #include "components/window.h"
 #include "components/gui_renderer.h"
 
