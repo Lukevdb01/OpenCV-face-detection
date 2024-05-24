@@ -1,0 +1,16 @@
+# Directories
+.vs/
+Binaries/
+Submodules/
+
+# Files
+*.vcxproj
+*.vcxproj.user
+*.vcxproj.filters
+*.sln
+*.log
+*.pyc
+Makefile
+
+# Exclude
+Engine/source/glad.c
