@@ -1,3 +1,0 @@
-[submodule "Application/source/imgui"]
-	path = Application/source/imgui
-	url = https://github.com/Lukevdb01/imgui-docking.git
