@@ -4,6 +4,7 @@ project "Application"
     cppdialect "C++20"
     targetdir "Binaries/%{cfg.buildcfg}"
     staticruntime "off"
+    system "windows"
     
     files {
         "source/**.h",
@@ -13,9 +14,7 @@ project "Application"
     
     includedirs{
        "source",
-        "$(SolutionDir)Dependencies/Glad/include",
-        "$(SolutionDir)Dependencies/glm",
-        "$(SolutionDir)Submodules/ImGui/",
+        "$(SolutionDir)Dependencies/include",
     }
 
     sysincludedirs {
@@ -28,6 +27,7 @@ project "Application"
    
     links {
        "opengl32",
+       "opencv_world490"
     }
    
     targetdir ("../Binaries/" .. OutputDir .. "/")
