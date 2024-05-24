@@ -10,10 +10,15 @@
 class GuiRenderer
 {
 public:
+	GuiRenderer() {
+		helper = new Helper();
+	}
+
 	void Initialize(HWND hwnd, HDC hdc, HGLRC hglrc);
-	void Render();
+	void Render(cv::Mat image, Helper* helper);
 	void Shutdown();
 private:
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+	Helper* helper = nullptr;
 };
 

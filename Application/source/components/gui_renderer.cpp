@@ -11,7 +11,7 @@ void GuiRenderer::Initialize(HWND hwnd, HDC hdc, HGLRC hglrc)
 	ImGui::StyleColorsDark();
 }
 
-void GuiRenderer::Render()
+void GuiRenderer::Render(cv::Mat image, Helper* helper)
 {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplWin32_NewFrame();
@@ -21,7 +21,7 @@ void GuiRenderer::Render()
 	ImGui::DockSpaceOverViewport(dockspace_id);
 
 	ImGui::Begin("Hello, world!");
-	ImGui::Text("This is some useful text.");
+	ImGui::Image((void*)(intptr_t)helper->textureID, ImVec2(image.cols, image.rows));
 	ImGui::End();
 
 	ImGui::Render();
