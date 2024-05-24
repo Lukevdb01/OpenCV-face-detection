@@ -4,18 +4,15 @@
 UINT Window::m_ResizeWidth = 0;
 UINT Window::m_ResizeHeight = 0;
 
-void Window::Initialize(HINSTANCE hInstance, int nCmdShow)
+void Window::Initialize(LPCWSTR TITLE, int WIDTH, int HEIGHT, HINSTANCE hInstance, int nCmdShow)
 {
 	// Create window class reference
-	WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, L"OpenGLOpenCVDetection", NULL };
+	WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, TITLE, NULL};
 	RegisterClassExW(&wc);
 
 	// Create window
-	hwnd = CreateWindow(wc.lpszClassName, L"OpenCV - Human Detection", WS_OVERLAPPEDWINDOW, 100, 100, 800, 600, NULL, NULL, wc.hInstance, NULL);
-
-	// Check if HDC is != null
-	if (!hdc)
-		hdc = GetDC(hwnd);
+	hwnd = CreateWindow(wc.lpszClassName, L"OpenCV - Human Detection", WS_OVERLAPPEDWINDOW, 100, 100, WIDTH, HEIGHT, NULL, NULL, wc.hInstance, NULL);
+	hdc = GetDC(hwnd);
 
 	// Set pixel format
 	pfd.nSize = sizeof(pfd);
@@ -27,14 +24,19 @@ void Window::Initialize(HINSTANCE hInstance, int nCmdShow)
 	pfd.cStencilBits = 8;
 	pfd.iLayerType = PFD_MAIN_PLANE;
 	int format = ChoosePixelFormat(hdc, &pfd);
-	SetPixelFormat(hdc, format, &pfd);
 
-	// Create OpenGL context
-	if (!hglrc)
-		hglrc = wglCreateContext(hdc);
+	if (!SetPixelFormat(hdc, format, &pfd))
+	{
+		MessageBox(NULL, L"Failed to set a pixel format", L"Error", MB_OK);
+	}
+	hglrc = wglCreateContext(hdc);
+	glViewport(0, 0, WIDTH, HEIGHT);
 
 	// Make OpenGL context current
-	wglMakeCurrent(hdc, hglrc);
+	if (!wglMakeCurrent(hdc, hglrc))
+	{
+		MessageBox(NULL, L"Failed to make current context", L"Error", MB_OK);
+	}
 
 	// Show window
 	ShowWindow(hwnd, SW_SHOWDEFAULT);
@@ -54,11 +56,17 @@ LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
+	case WM_PAINT:
+		PAINTSTRUCT ps;
+		BeginPaint(hwnd, &ps);
+		EndPaint(hwnd, &ps);
+		return 0;
 	case WM_SIZE:
 		if (wParam == SIZE_MINIMIZED)
 			return 0;
 		Window::m_ResizeWidth = (UINT)LOWORD(lParam); // Queue resize
 		Window::m_ResizeHeight = (UINT)HIWORD(lParam);
+		glViewport(0, 0, LOWORD(lParam), HIWORD(lParam));
 		return 0;
 	case WM_SYSCOMMAND:
 		if ((wParam & 0xfff0) == SC_KEYMENU) // Disable ALT application menu

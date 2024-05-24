@@ -5,16 +5,13 @@
 class Window
 {
 public:
-	Window() : hwnd(nullptr) 
-	{
-		
-	}
-	void Initialize(HINSTANCE hInstance, int nCmdShow);
+	Window() : hwnd(nullptr) {}
+	void Initialize(LPCWSTR TITLE, int WIDTH, int HEIGHT, HINSTANCE hInstance, int nCmdShow);
 	void Release();
 public:
-	HWND hwnd;
-	HDC hdc = GetDC(hwnd);
-	HGLRC hglrc = wglCreateContext(hdc);
+	HWND hwnd = {};
+	HDC hdc = {};
+	HGLRC hglrc = {};
 	PIXELFORMATDESCRIPTOR pfd = {};
 	static UINT m_ResizeWidth, m_ResizeHeight;
 private:
