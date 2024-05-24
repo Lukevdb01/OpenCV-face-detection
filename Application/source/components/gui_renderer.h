@@ -4,8 +4,8 @@
 
 #include "utils/opengl.h"
 #include "imgui/imgui.h"
-#include "imgui/backends/imgui_impl_win32.h"
-#include "imgui/backends/imgui_impl_opengl3.h"
+#include "imgui/imgui_impl_win32.h"
+#include "imgui/imgui_impl_opengl3.h"
 
 class GuiRenderer
 {

@@ -1,5 +1,6 @@
 #include "window.h"
 #include "utils/opengl.h"
+#include <imgui/imgui.h>
 
 UINT Window::m_ResizeWidth = 0;
 UINT Window::m_ResizeHeight = 0;
@@ -52,8 +53,13 @@ void Window::Release()
 	UnregisterClass(L"OpenGLOpenCVDetection", GetModuleHandle(NULL));
 }
 
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 LRESULT Window::WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	if (ImGui_ImplWin32_WndProcHandler(hwnd, message, wParam, lParam))
+		return true;
+
 	switch (message)
 	{
 	case WM_PAINT:
