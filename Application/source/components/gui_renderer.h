@@ -15,7 +15,7 @@ public:
 	}
 
 	void Initialize(HWND hwnd, HDC hdc, HGLRC hglrc);
-	void Render(cv::Mat image, Helper* helper);
+	void Render(cv::Mat image, Helper* helper, std::vector<cv::Rect> detections);
 	void Shutdown();
 private:
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);

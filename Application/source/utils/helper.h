@@ -18,20 +18,19 @@ class Helper {
 public:
 	GLuint textureID;
 
-	cv::Mat ConvertMatToTexture(cv::Mat image) {
-		if (image.empty()) {
-			MessageBox(NULL, L"Image is empty", L"Error", MB_OK | MB_ICONERROR);
-		}
-
-        cv::cvtColor(image, image, cv::COLOR_BGR2RGBA);
-        glEnable(GL_TEXTURE_2D);
+    GLuint matToTexture(cv::Mat& mat, GLenum minFilter, GLenum magFilter, GLenum wrapFilter) {
         glGenTextures(1, &textureID);
         glBindTexture(GL_TEXTURE_2D, textureID);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.cols, image.rows, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.ptr());
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapFilter);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapFilter);
+
+        cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, mat.cols, mat.rows, 0, GL_RGB, GL_UNSIGNED_BYTE, mat.data);
         glBindTexture(GL_TEXTURE_2D, 0);
 
-		return image;
-	}
+        return textureID;
+    }
 };

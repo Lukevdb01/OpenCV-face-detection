@@ -2,36 +2,41 @@
 #include "utils/helper.h"
 #include "components/window.h"
 #include "components/gui_renderer.h"
+#include <utils/config_loader.h>
 
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd) {
 	Window* window = new Window();
 	GuiRenderer* render = new GuiRenderer();
 	Helper* helper = new Helper();
+	ConfigLoader* config = new ConfigLoader("resources", "config.ini");
 
-	window->Initialize(L"OpenCV - Human Detection", 800, 600, hInstance, nShowCmd);
-	render->Initialize(window->hwnd, window->hdc, window->hglrc);
-
-	cv::Mat image = cv::imread("picture.jpg");
-	if (image.empty())
+	if (!config)
 	{
-		MessageBox(NULL, L"Failed to load image", L"Error", MB_OK | MB_ICONERROR);
+		MessageBox(NULL, L"Failed to load config file", L"Error", MB_OK | MB_ICONERROR);
 		return -1;
 	}
 
-	cv::HOGDescriptor hog;
-	hog.setSVMDetector(cv::HOGDescriptor::getDefaultPeopleDetector());
-
-	std::vector<cv::Rect> detections;
-	hog.detectMultiScale(image, detections, 0, cv::Size(8, 8), cv::Size(32, 32), 1.2, 2);
-
-	for (auto& detection : detections)
+	cv::CascadeClassifier cascade;
+	cascade.load(config->getString("opencv", "detection_method"));
+	if (cascade.empty())
 	{
-		cv::rectangle(image, detection.tl(), detection.br(), cv::Scalar(255, 0, 0), 2);
+		MessageBox(NULL, L"Failed to load cascade classifier", L"Error", MB_OK | MB_ICONERROR);
+		return -1;
 	}
+	cv::Mat image;
 
-	std::cout << "Number of people detected: " << detections.size() << std::endl;
+	window->Initialize(L"OpenCV - Human Detection", config->GetInteger("application", "window_width"), config->GetInteger("application", "window_height"), hInstance, nShowCmd);
+	render->Initialize(window->hwnd, window->hdc, window->hglrc);
 
-	helper->ConvertMatToTexture(image);
+	cv::VideoCapture cap(0);
+	if (!cap.isOpened())
+	{
+		MessageBox(NULL, L"Failed to open camera", L"Error", MB_OK | MB_ICONERROR);
+		return -1;
+	}
+	cap.set(cv::CAP_PROP_FPS, 60);
+
+	//std::cout << "Number of people detected: " << detections.size() << std::endl;
 
 	MSG msg = {};
 	while (msg.message != WM_QUIT)
@@ -44,10 +49,20 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
 
+			cap.read(image);
+
+			std::vector<cv::Rect> detections;
+			cascade.detectMultiScale(image, detections, 1.3, 5);
+
+			for (int i = 0; i < detections.size(); i++)
+			{
+				cv::rectangle(image, detections[i].tl(), detections[i].br(), cv::Scalar(50, 50, 255), 3);
+			}
+
 			if (image.empty())
 				MessageBox(NULL, L"Image is empty", L"Error", MB_OK | MB_ICONERROR);
 
-			render->Render(image, helper);
+			render->Render(image, helper, detections);
 
 			SwapBuffers(window->hdc);
 		}
