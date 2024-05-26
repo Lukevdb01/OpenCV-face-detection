@@ -28,15 +28,13 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	window->Initialize(L"OpenCV - Human Detection", config->GetInteger("application", "window_width"), config->GetInteger("application", "window_height"), hInstance, nShowCmd);
 	render->Initialize(window->hwnd, window->hdc, window->hglrc);
 
-	cv::VideoCapture cap(0);
+	cv::VideoCapture cap(config->GetInteger("opencv", "capture_id"));
 	if (!cap.isOpened())
 	{
 		MessageBox(NULL, L"Failed to open camera", L"Error", MB_OK | MB_ICONERROR);
 		return -1;
 	}
-	cap.set(cv::CAP_PROP_FPS, 60);
-
-	//std::cout << "Number of people detected: " << detections.size() << std::endl;
+	cap.set(cv::CAP_PROP_FPS, config->GetInteger("application", "frames_per_second"));
 
 	MSG msg = {};
 	while (msg.message != WM_QUIT)
