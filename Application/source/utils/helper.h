@@ -7,11 +7,6 @@
 
 #include <opencv2/opencv.hpp>
 
-// Function pointer typedef for glGenerateMipmap
-typedef void (APIENTRY* PFNGLGENERATEMIPMAPPROC)(GLenum target);
-// Declare function pointer variable
-static PFNGLGENERATEMIPMAPPROC glGenerateMipmap = reinterpret_cast<PFNGLGENERATEMIPMAPPROC>(wglGetProcAddress("glGenerateMipmap"));
-
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 class Helper {

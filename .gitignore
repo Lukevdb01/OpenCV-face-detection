@@ -12,6 +12,8 @@ Dependencies/
 *.log
 *.pyc
 *.ini
+*.xml
+*.dll
 Makefile
 
 # Exclude
