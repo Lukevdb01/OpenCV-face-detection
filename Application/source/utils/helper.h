@@ -1,6 +1,8 @@
 #pragma once
 
-#include <Windows.h>
+#include <iostream>
+#include <string>
+#include <windows.h>
 #include <gl/GL.h>
 #include <gl/GLU.h>
 #include "imgui/imgui.h"
@@ -27,5 +29,12 @@ public:
         glBindTexture(GL_TEXTURE_2D, 0);
 
         return textureID;
+    }
+
+    std::wstring StringToLPCWSTR(const std::string& str) {
+        int size_needed = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), static_cast<int>(str.size()), nullptr, 0);
+        std::wstring wstrTo(size_needed, 0);
+        MultiByteToWideChar(CP_UTF8, 0, str.c_str(), static_cast<int>(str.size()), &wstrTo[0], size_needed);
+        return wstrTo;
     }
 };
