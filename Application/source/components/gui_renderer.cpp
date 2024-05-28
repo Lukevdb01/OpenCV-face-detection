@@ -35,6 +35,10 @@ void GuiRenderer::Render(cv::Mat image, Helper* helper, std::vector<cv::Rect> de
 	}
 	ImGui::End();
 
+	ImGui::Begin("Properties");
+	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+	ImGui::End();
+
 	ImGui::Begin("Camera 1");
 	GLuint textureID = helper->matToTexture(image, GL_LINEAR, GL_LINEAR, GL_CLAMP);
 

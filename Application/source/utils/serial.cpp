@@ -5,19 +5,22 @@ Serial::~Serial()
 	CloseHandle(hSerial);
 }
 
-void Serial::Open(std::string port, DWORD baudRate)
+bool Serial::Open(std::string port, DWORD baudRate)
 {
 	hSerial = CreateFileA(port.c_str(), GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	if (hSerial == INVALID_HANDLE_VALUE) {
 		if (GetLastError() == ERROR_FILE_NOT_FOUND) {
 			MessageBox(NULL, L"Serial port does not exist", L"Error", MB_OK | MB_ICONERROR);
+			return false;
 		}
 		MessageBox(NULL, L"Failed to open serial port", L"Error", MB_OK | MB_ICONERROR);
+		return false;
 	}
 
 	dcbSerialParams.DCBlength = sizeof(dcbSerialParams);
 	if (!GetCommState(hSerial, &dcbSerialParams)) {
 		MessageBox(NULL, L"Failed to get comm state", L"Error", MB_OK | MB_ICONERROR);
+		return false;
 	}
 
 	dcbSerialParams.BaudRate = baudRate;
@@ -27,6 +30,7 @@ void Serial::Open(std::string port, DWORD baudRate)
 
 	if (!SetCommState(hSerial, &dcbSerialParams)) {
 		MessageBox(NULL, L"Failed to set comm state", L"Error", MB_OK | MB_ICONERROR);
+		return false;
 	}
 
 	timeouts.ReadIntervalTimeout = 50;
@@ -37,7 +41,10 @@ void Serial::Open(std::string port, DWORD baudRate)
 
 	if (!SetCommTimeouts(hSerial, &timeouts)) {
 		MessageBox(NULL, L"Failed to set comm timeouts", L"Error", MB_OK | MB_ICONERROR);
+		return false;
 	}
+
+	return true;
 }
 
 void Serial::Write(int data_sent)
@@ -50,6 +57,5 @@ void Serial::Write(int data_sent)
 		MessageBox(NULL, L"Failed to write to serial port", L"Error", MB_OK | MB_ICONERROR);
 		CloseHandle(hSerial);
 	}
-
 }
 

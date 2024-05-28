@@ -8,7 +8,7 @@ class Serial
 public:
 	~Serial();
 
-	void Open(std::string port, DWORD baudRate);
+	bool Open(std::string port, DWORD baudRate);
 	void Write(int data_sent);
 private:
 	HANDLE hSerial;
