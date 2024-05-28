@@ -35,10 +35,22 @@ void GuiRenderer::Render(cv::Mat image, Helper* helper, std::vector<cv::Rect> de
 	}
 	ImGui::End();
 
-	ImGui::Begin("Hello, world!");
+	ImGui::Begin("Camera 1");
 	GLuint textureID = helper->matToTexture(image, GL_LINEAR, GL_LINEAR, GL_CLAMP);
 
-	ImGui::Image((void*)(intptr_t)textureID, ImGui::GetContentRegionAvail());
+	// Calculate aspect ratio
+	float aspect_ratio = static_cast<float>(image.cols) / static_cast<float>(image.rows);
+	ImVec2 available_size = ImGui::GetContentRegionAvail();
+	float width = available_size.x;
+	float height = width / aspect_ratio;
+
+	if (height > available_size.y)
+	{
+		height = available_size.y;
+		width = height * aspect_ratio;
+	}
+
+	ImGui::Image((void*)(intptr_t)textureID, ImVec2(width, height));
 	ImGui::End();
 
 	ImGui::Render();

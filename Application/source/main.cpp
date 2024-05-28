@@ -52,7 +52,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
             cap.read(image);
 
             std::vector<cv::Rect> detections;
-            cascade.detectMultiScale(image, detections, 1.3, 5);
+            cascade.detectMultiScale(image, detections, config->GetFloat("opencv", "scale_factor"), config->GetInteger("opencv", "neightbors"), 0, cv::Size(30, 30), cv::Size());
 
             int currentState;
             if (detections.size() == 0) {
