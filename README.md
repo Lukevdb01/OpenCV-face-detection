@@ -15,4 +15,4 @@ This repository contains a project that implements human face detection using Op
 - **Windows API**: Used for creating and managing the application window.
 - **OpenGL**: Used for rendering the video feed.
 - **Config Loader**: Custom utility for loading configuration settings.
-#### © copyright - Luke van den Broek - 2024
+#### © copyright 2024 - 2025 | Luke van den Broek
